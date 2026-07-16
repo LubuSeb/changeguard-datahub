@@ -91,7 +91,7 @@ function SourceRail({ catalog, selected, onSelect }: {
             onClick={() => onSelect(asset.urn)}
           >
             <span className="asset-platform">{asset.platform.slice(0, 2).toUpperCase()}</span>
-            <span><strong>{asset.name}</strong><small>{asset.domain} · {asset.owner}</small></span>
+            <span><strong>{asset.name}</strong><small>{asset.domain} / {asset.owner}</small></span>
             {asset.hasCertificationTag && <BadgeCheck size={15} aria-label="Configured certification tag present" />}
           </button>
         ))}
@@ -137,7 +137,7 @@ function ProposalPanel({ asset, proposal, onChange, onRun, loading }: {
           <span>Schema field</span>
           <div className="select-wrap">
             <select value={proposal.field} onChange={(event) => onChange({ ...proposal, field: event.target.value })}>
-              {asset?.fields.map((field) => <option value={field.name} key={field.name}>{field.name} · {field.type}</option>)}
+              {asset?.fields.map((field) => <option value={field.name} key={field.name}>{field.name} / {field.type}</option>)}
             </select>
             <ChevronDown size={16} />
           </div>
@@ -203,7 +203,7 @@ function PassportHeader({ passport }: { passport: ChangePassport }) {
   return (
     <section className="passport-header">
       <div className="passport-summary">
-        <div className="section-kicker"><ClipboardCheck size={15} /><span>Change passport · {passport.id}</span></div>
+        <div className="section-kicker"><ClipboardCheck size={15} /><span>Change passport / {passport.id}</span></div>
         <h2>{passport.title}</h2>
         <p>{passport.summary}</p>
         <div className="metric-strip">
@@ -233,11 +233,11 @@ function ImpactTable({ passport }: { passport: ChangePassport }) {
         {passport.impacted.map((asset) => (
           <div role="row" key={asset.urn}>
             <span className={`severity-dot severity-dot--${asset.severity}`} />
-            <span><strong>{asset.name}</strong><small>{asset.platform} · {asset.qualifiedName}</small></span>
+            <span><strong>{asset.name}</strong><small>{asset.platform} / {asset.qualifiedName}</small></span>
             <span><strong>{asset.owner}</strong><small>{asset.domain}</small></span>
             <span>
               <strong>{asset.impactScope === "field" ? asset.impactedFields.join(", ") : "Field mapping unknown"}</strong>
-              <small>{asset.impactScope === "field" ? "Column mapping" : "Asset-level impact"} Â· {asset.hops} hop{asset.hops === 1 ? "" : "s"}</small>
+              <small>{asset.impactScope === "field" ? "Column mapping" : "Asset-level impact"} / {asset.hops} hop{asset.hops === 1 ? "" : "s"}</small>
             </span>
             <span>{titleCase(asset.severity)} risk</span>
           </div>
@@ -422,7 +422,7 @@ export default function App() {
         {loading && (
           <section className="analysis-loading">
             <RefreshCw className="spin" size={28} />
-            <div><strong>Walking the context graph</strong><span>Schema → lineage → owners → governance → rollout</span></div>
+            <div><strong>Walking the context graph</strong><span>Schema -&gt; lineage -&gt; owners -&gt; governance -&gt; rollout</span></div>
           </section>
         )}
         {passport && (

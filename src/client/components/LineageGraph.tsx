@@ -32,7 +32,7 @@ function AssetNode({ data }: NodeProps<Node<AssetNodeData>>) {
       <span className="graph-node__icon"><Icon size={15} /></span>
       <span className="graph-node__copy">
         <strong>{asset.name}</strong>
-        <small>{asset.platform} · {asset.owner}</small>
+        <small>{asset.platform} / {asset.owner}</small>
       </span>
       <Handle type="source" position={Position.Right} />
     </div>
