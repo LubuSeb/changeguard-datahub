@@ -1,0 +1,27 @@
+{
+  "result": [
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,warehouse.analytics.orders,PROD)",
+      "type": "DATASET",
+      "name": "orders",
+      "properties": {
+        "qualifiedName": "warehouse.analytics.orders",
+        "description": "Curated order facts."
+      },
+      "platform": { "name": "Snowflake" },
+      "ownership": {
+        "owners": [
+          { "owner": { "properties": { "displayName": "Data Platform" } } }
+        ]
+      },
+      "domain": {
+        "domain": { "properties": { "name": "Commerce" } }
+      },
+      "tags": {
+        "tags": [
+          { "tag": { "properties": { "name": "Tier-1" } } }
+        ]
+      }
+    }
+  ]
+}

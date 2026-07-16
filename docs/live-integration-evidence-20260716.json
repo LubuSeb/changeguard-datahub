@@ -1,0 +1,64 @@
+{
+  "capturedAt": "2026-07-16T19:33:58.4914455+02:00",
+  "environment": {
+    "datahubGms": "http://127.0.0.1:8080",
+    "mcpEndpoint": "http://127.0.0.1:8005/mcp",
+    "deploymentProfile": "private",
+    "data": "synthetic local seed"
+  },
+  "readOnlyRun": {
+    "passed": true,
+    "mutationEnabled": false,
+    "catalogAssets": 5,
+    "sourceUrn": "urn:li:dataset:(urn:li:dataPlatform:postgres,commerce.public.customers,PROD)",
+    "sourcePlatform": "PostgreSQL",
+    "sourceFields": 4,
+    "downstreamAssets": 4,
+    "requiredToolsDiscovered": [
+      "search",
+      "get_entities",
+      "list_schema_fields",
+      "get_lineage",
+      "save_document"
+    ]
+  },
+  "columnLineage": [
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.core.dim_customers,PROD)",
+      "fields": ["country_code"],
+      "hops": 1
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.growth.customer_360,PROD)",
+      "fields": ["market"],
+      "hops": 2
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:feast,customer_features.churn_features,PROD)",
+      "fields": ["market"],
+      "hops": 3
+    },
+    {
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:mlflow,models.churn_intervention_v4,PROD)",
+      "fields": ["market"],
+      "hops": 4
+    }
+  ],
+  "writeRun": {
+    "passed": true,
+    "mutationEnabled": true,
+    "tool": "save_document",
+    "success": true,
+    "documentUrn": "urn:li:document:shared-08399784-51e2-4313-9361-cd7a718fc089",
+    "message": "Successfully created document: Rename country_code to market_code in commerce.public.customers"
+  },
+  "commands": [
+    "DATAHUB_MCP_URL=http://127.0.0.1:8005/mcp DATAHUB_ALLOW_MUTATION=false npm run test:live",
+    "DATAHUB_MCP_URL=http://127.0.0.1:8005/mcp DATAHUB_ALLOW_MUTATION=true npm run test:live"
+  ],
+  "notes": [
+    "No external DataHub instance, production system, or paid service was contacted.",
+    "The write receipt belongs to the local synthetic DataHub instance and is not an external submission receipt.",
+    "The public Lambda handler constructs the simulated gateway directly and cannot use this live route."
+  ]
+}

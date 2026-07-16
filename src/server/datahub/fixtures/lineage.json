@@ -1,0 +1,29 @@
+{
+  "downstreams": {
+    "searchResults": [
+      {
+        "entity": {
+          "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,warehouse.finance.order_revenue,PROD)",
+          "type": "DATASET",
+          "name": "order_revenue",
+          "properties": {
+            "qualifiedName": "warehouse.finance.order_revenue"
+          },
+          "platform": { "name": "Snowflake" },
+          "ownership": {
+            "owners": [
+              { "owner": { "properties": { "displayName": "Finance Data" } } }
+            ]
+          },
+          "tags": {
+            "tags": [
+              { "tag": { "properties": { "name": "SOX" } } }
+            ]
+          }
+        },
+        "degree": 1,
+        "lineageColumns": ["gross_revenue"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,warehouse.analytics.orders,PROD)",
+  "fields": [
+    {
+      "fieldPath": "order_id",
+      "nativeDataType": "VARCHAR",
+      "nullable": false,
+      "description": "Stable order identifier."
+    },
+    {
+      "fieldPath": "total_amount",
+      "nativeDataType": "NUMBER(18,2)",
+      "nullable": false,
+      "description": "Gross order amount."
+    }
+  ],
+  "totalFields": 2,
+  "returned": 2,
+  "remainingCount": 0,
+  "matchingCount": null,
+  "offset": 0
+}

@@ -1,0 +1,55 @@
+{
+  "searchResults": [
+    {
+      "entity": {
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,warehouse.analytics.orders,PROD)",
+        "type": "DATASET",
+        "name": "orders",
+        "properties": {
+          "name": "orders",
+          "qualifiedName": "warehouse.analytics.orders",
+          "description": "Curated order facts."
+        },
+        "platform": {
+          "urn": "urn:li:dataPlatform:snowflake",
+          "name": "Snowflake"
+        },
+        "ownership": {
+          "owners": [
+            {
+              "owner": {
+                "urn": "urn:li:corpGroup:data-platform",
+                "properties": { "displayName": "Data Platform" }
+              }
+            }
+          ]
+        },
+        "domain": {
+          "domain": {
+            "urn": "urn:li:domain:commerce",
+            "properties": { "name": "Commerce" }
+          }
+        },
+        "tags": {
+          "tags": [
+            {
+              "tag": {
+                "urn": "urn:li:tag:Tier1",
+                "properties": { "name": "Tier-1" }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "facets": [
+    {
+      "field": "platform",
+      "aggregations": [
+        { "value": "urn:li:dataPlatform:snowflake", "count": 1 }
+      ]
+    }
+  ],
+  "count": 1
+}
