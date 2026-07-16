@@ -8,8 +8,8 @@
 | DataHub open-source platform plus an approved agent surface | Configurable official DataHub MCP endpoint using `@modelcontextprotocol/sdk` |
 | Meaningful DataHub usage | Schema validation, field-aware lineage, ownership, governance, and document write-back directly alter the decision |
 | New work during submission period | Repository created July 16, 2026, after the July 6 opening date |
-| Public open-source repository | Prepared for publication; Apache-2.0 `LICENSE` included |
-| Easy judge access | Fully functional no-credential demo mode plus Docker and local setup |
+| Public open-source repository | https://github.com/LubuSeb/changeguard-datahub with detected Apache-2.0 license |
+| Easy judge access | Public no-credential forced-demo Lambda plus Docker and local setup |
 | Text description | Draft in `DEVPOST.md` |
 | Public demonstration video under three minutes | Script prepared in `DEMO_SCRIPT.md`; recording and upload remain manual |
 | Sample outputs | `examples/sample-change-passport.md` |
@@ -51,7 +51,7 @@ This is deliberately richer than a hard-coded list of tables: the selected field
 - Certification weighting is based only on exact tag names configured through `DATAHUB_CERTIFICATION_TAGS` (default `Certified`), not DataHub's authoritative certification aspect.
 - Demo write-back is process-local and resets on restart; it is labeled as demo in both UI and receipt.
 - Risk scoring is deterministic and transparent, not learned. That improves auditability but does not replace organization-specific policy review.
-- A public deployment, public repository URL, and public video are mandatory for submission and remain manual publication steps.
+- The public deployment and repository are complete. The required public video remains the only publication step.
 
 ## Judging assessment
 
@@ -59,5 +59,5 @@ This is deliberately richer than a hard-coded list of tables: the selected field
 - **Technical execution:** strong for a self-contained prototype. It builds, tests, runs without credentials, exposes failures, and passes a real local MCP read/write smoke test.
 - **Originality:** good. It converts catalog context into a change-control artifact rather than recreating search, lineage, or chat.
 - **Real-world usefulness:** strong. Schema change blast-radius and coordinated deprecation are recurring data-platform problems.
-- **Submission quality:** code and written assets are ready; final score depends on a clean public deployment and concise working demo video.
+- **Submission quality:** code, written assets, public repository, and public demo are ready; final completion depends on the concise working demo video.
 - **Bonus OSS contribution:** absent. No upstream DataHub contribution was attempted.

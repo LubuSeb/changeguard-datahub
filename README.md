@@ -2,6 +2,9 @@
 
 ChangeGuard is a DataHub-grounded schema change passport agent. It turns a proposed column change into an evidence-backed blast radius, risk decision, owner routing plan, compatibility rollout, validation SQL, and durable decision record.
 
+- [Public demo](https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/)
+- [Source repository](https://github.com/LubuSeb/changeguard-datahub)
+
 The important distinction is that ChangeGuard does not infer the organization from a prompt. It uses DataHub's context graph through the official MCP surface:
 
 - `get_entities` supplies ownership, domains, and tags; exact configured tag names provide a certification-tag signal.
@@ -91,6 +94,8 @@ docker run --rm -p 8787:8787 \
 ## AWS Lambda public demo
 
 The Lambda entry point is intentionally demo-only. It constructs `DemoDataHubGateway` directly and ignores live DataHub mode and endpoint variables. Demo write-back is process-local, non-privileged, and may reset between Lambda invocations.
+
+The reviewed public deployment is available at [ChangeGuard on AWS Lambda](https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/).
 
 ```bash
 npm run build:lambda

@@ -76,6 +76,6 @@ DataHub, DataHub MCP Server, Model Context Protocol, TypeScript, React, Vite, Ex
 
 ## Required URLs before submission
 
-- Project demo: `TBD_PUBLIC_DEPLOYMENT_URL`
-- Public Apache-2.0 repository: `TBD_PUBLIC_GITHUB_URL`
+- Project demo: https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/
+- Public Apache-2.0 repository: https://github.com/LubuSeb/changeguard-datahub
 - Public video under three minutes: `TBD_PUBLIC_VIDEO_URL`
