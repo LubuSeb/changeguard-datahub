@@ -14,6 +14,10 @@ The important distinction is that ChangeGuard does not infer the organization fr
 
 The project targets **Agents That Do Real Work** in the official Build with DataHub hackathon. It is Apache-2.0 licensed and was created during the event submission period.
 
+## Project provenance
+
+ChangeGuard was created from scratch during the July 6-August 10, 2026 submission period. OpenAI Codex assisted with implementation, adversarial review, validation, and media preparation. No pre-existing project code was incorporated; third-party open-source dependencies are declared in `package.json` and `package-lock.json`.
+
 ## What it does
 
 1. Select a cataloged dataset and schema field.

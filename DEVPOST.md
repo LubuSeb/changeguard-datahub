@@ -28,7 +28,7 @@ ChangeGuard accepts a concrete schema proposal, such as renaming `country_code` 
 4. group migration work by DataHub owner;
 5. score risk with an inspectable policy engine;
 6. generate a reversible compatibility rollout and validation SQL; and
-7. write the final change passport back to DataHub as a decision document.
+7. in authorized private live mode, write the final passport back through `save_document`; the public demo simulates this operation without changing DataHub.
 
 The output is not another lineage visualization. It is a merge-ready operating plan with gates, owners, checks, rollback, and an evidence trail showing exactly which DataHub tools grounded the decision.
 
@@ -53,7 +53,7 @@ The hard part was keeping the agent useful without letting it invent context. Ch
 ## Accomplishments
 
 - End-to-end, no-credential demo with meaningful cross-platform lineage.
-- Real official MCP integration and explicit catalog write-back.
+- Implements and separately validates an official DataHub MCP integration and gated private `save_document` write-back. The public demo uses synthetic fixtures and saves only a process-local simulated receipt.
 - Deterministic risk logic with asset-level severity and owner routing.
 - Generated validation SQL and a reversible five-phase rollout.
 - Tests for official MCP contracts, lineage mapping, SQL dialects, deployment boundaries, anti-hallucination gates, failed writes, and idempotent demo write-back.
@@ -73,6 +73,10 @@ Metadata becomes more valuable when agents do not just retrieve it. DataHub's co
 ## Built with
 
 DataHub, DataHub MCP Server, Model Context Protocol, TypeScript, React, Vite, Express, Zod, React Flow, Vitest, Docker, AWS Lambda
+
+## Project provenance
+
+ChangeGuard was created from scratch during the July 6-August 10, 2026 submission period. OpenAI Codex assisted with implementation, adversarial review, validation, and media preparation. No pre-existing project code was incorporated; third-party open-source dependencies are listed in `package.json` and `package-lock.json`.
 
 ## Required URLs before submission
 
