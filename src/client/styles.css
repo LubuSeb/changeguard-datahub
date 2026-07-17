@@ -35,7 +35,7 @@ button:disabled { cursor: not-allowed; }
 
 .app-shell {
   display: grid;
-  grid-template-columns: 270px minmax(0, 1fr);
+  grid-template-columns: 340px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -43,7 +43,7 @@ button:disabled { cursor: not-allowed; }
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 10;
-  width: 270px;
+  width: 340px;
   display: flex;
   flex-direction: column;
   background: #202725;
@@ -110,6 +110,7 @@ button:disabled { cursor: not-allowed; }
   grid-template-columns: 32px minmax(0, 1fr) 16px;
   align-items: center;
   gap: 10px;
+  min-height: 66px;
   padding: 10px;
   color: #c7cecb;
   text-align: left;
@@ -122,8 +123,8 @@ button:disabled { cursor: not-allowed; }
 .asset-nav button:hover { color: #fff; background: #2a322f; }
 .asset-nav button.active { color: #fff; background: #34423d; border-color: #4a5b55; }
 .asset-nav button > span:nth-child(2) { min-width: 0; display: flex; flex-direction: column; }
-.asset-nav button strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
-.asset-nav button small { overflow: hidden; margin-top: 3px; color: #929e99; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.asset-nav button strong { overflow-wrap: anywhere; font-size: 13px; line-height: 1.28; }
+.asset-nav button small { margin-top: 4px; color: #929e99; font-size: 10px; line-height: 1.25; overflow-wrap: anywhere; }
 .asset-nav button.active small { color: #b9c5c0; }
 .asset-nav button > svg { color: #a9c7b9; }
 
@@ -385,8 +386,8 @@ main { grid-column: 2; min-width: 0; background: var(--paper); }
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 205px;
-  min-height: 56px;
+  width: 250px;
+  min-height: 66px;
   padding: 9px;
   color: var(--ink);
   background: #fff;
@@ -402,16 +403,16 @@ main { grid-column: 2; min-width: 0; background: var(--paper); }
 .graph-node--dashboard .graph-node__icon { color: #8f3d2c; background: var(--coral-soft); }
 .graph-node--mlFeature .graph-node__icon, .graph-node--mlModel .graph-node__icon { color: #7a5a08; background: var(--mustard-soft); }
 .graph-node__copy { display: flex; min-width: 0; flex-direction: column; }
-.graph-node__copy strong { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-.graph-node__copy small { overflow: hidden; margin-top: 4px; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.graph-node__copy strong { font-size: 11px; line-height: 1.25; overflow-wrap: anywhere; }
+.graph-node__copy small { margin-top: 4px; color: var(--muted); font-size: 8px; line-height: 1.25; overflow-wrap: anywhere; }
 .react-flow__handle { width: 6px; height: 6px; background: var(--forest); border: 1px solid #fff; }
 
 .impact-table { background: #fff; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 6px 6px; overflow: hidden; }
 .impact-table > div { display: grid; grid-template-columns: 12px minmax(160px, 1.3fr) minmax(125px, 0.8fr) minmax(125px, 0.85fr) 75px; align-items: center; gap: 10px; min-height: 54px; padding: 8px 13px; border-top: 1px solid #eceae4; }
 .impact-table > div:first-child { border-top: 0; }
 .impact-table > div > span:not(.severity-dot) { display: flex; min-width: 0; flex-direction: column; }
-.impact-table strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.impact-table small { overflow: hidden; margin-top: 3px; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.impact-table strong { font-size: 10px; line-height: 1.25; overflow-wrap: anywhere; }
+.impact-table small { margin-top: 3px; color: var(--muted); font-size: 8px; line-height: 1.25; overflow-wrap: anywhere; }
 .impact-table > div > span:last-child { color: var(--muted); font-size: 9px; text-align: right; }
 .severity-dot { width: 7px; height: 7px; background: var(--forest); border-radius: 50%; }
 .severity-dot--moderate { background: var(--mustard); }
@@ -505,8 +506,8 @@ main { grid-column: 2; min-width: 0; background: var(--paper); }
 .app-footer span { display: flex; align-items: center; gap: 6px; }
 
 @media (max-width: 1180px) {
-  .app-shell { grid-template-columns: 220px minmax(0, 1fr); }
-  .source-rail { width: 220px; }
+  .app-shell { grid-template-columns: 240px minmax(0, 1fr); }
+  .source-rail { width: 240px; }
   .proposal-form { grid-template-columns: repeat(3, minmax(130px, 1fr)); }
   .rationale-field { grid-column: span 2; }
   .run-button { width: 100%; }

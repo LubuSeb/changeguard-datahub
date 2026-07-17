@@ -53,7 +53,7 @@ export function LineageGraph({ passport }: { passport: ChangePassport }) {
       return {
         id: asset.urn,
         type: "asset",
-        position: { x: level * 250 + 24, y: row * 94 + 28 },
+        position: { x: level * 292 + 24, y: row * 104 + 28 },
         data: { asset },
       };
     });

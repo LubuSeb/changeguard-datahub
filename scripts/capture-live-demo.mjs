@@ -55,6 +55,71 @@ async function fullscreen() {
   }
 }
 
+async function run(command, args, { allowFailure = false } = {}) {
+  const child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
+  const outputChunks = [];
+  const errorChunks = [];
+  child.stdout.on("data", (chunk) => outputChunks.push(chunk.toString()));
+  child.stderr.on("data", (chunk) => errorChunks.push(chunk.toString()));
+  const [code] = await once(child, "close");
+  const result = { code, stdout: outputChunks.join(""), stderr: errorChunks.join("") };
+  if (code !== 0 && !allowFailure) throw new Error(`${command} exited with code ${code}.\n${result.stderr.slice(-2000)}`);
+  return result;
+}
+
+async function activateCaptureWindow() {
+  const captureTitle = `ChangeGuard capture ${process.pid}`;
+  await page.evaluate((title) => { document.title = title; }, captureTitle);
+  await page.bringToFront();
+  await page.waitForTimeout(500);
+  const escapedTitle = captureTitle.replaceAll("'", "''");
+  const script = `
+    Add-Type @'
+using System;
+using System.Runtime.InteropServices;
+public static class CaptureWindow {
+  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+  [DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+  [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr hWnd, IntPtr insertAfter, int x, int y, int cx, int cy, uint flags);
+}
+'@;
+    $target = Get-Process chrome | Where-Object { $_.MainWindowTitle -like '*${escapedTitle}*' } | Select-Object -First 1;
+    if (-not $target) { throw 'Dedicated ChangeGuard Chrome window not found.' }
+    [CaptureWindow]::ShowWindowAsync($target.MainWindowHandle, 9) | Out-Null;
+    [CaptureWindow]::SetForegroundWindow($target.MainWindowHandle) | Out-Null;
+    [CaptureWindow]::SetWindowPos($target.MainWindowHandle, [IntPtr](-1), 0, 0, 0, 0, 0x43) | Out-Null;
+    (New-Object -ComObject WScript.Shell).AppActivate($target.Id) | Out-Null;
+  `;
+  await run("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script]);
+  await page.waitForTimeout(800);
+}
+
+async function assertDesktopMatchesPage(label) {
+  const expected = path.join(captureRoot, `${label}-expected.png`);
+  const observed = path.join(captureRoot, `${label}-observed.png`);
+  await page.screenshot({ path: expected, animations: "disabled" });
+  await run(ffmpegPath, [
+    "-y",
+    "-f", "lavfi",
+    "-i", "ddagrab=framerate=1:output_idx=0:draw_mouse=0",
+    "-vf", "hwdownload,format=bgra",
+    "-frames:v", "1",
+    "-update", "1",
+    observed,
+  ], { allowFailure: true });
+  const comparison = await run(ffmpegPath, [
+    "-i", expected,
+    "-i", observed,
+    "-lavfi", "ssim",
+    "-f", "null",
+    "NUL",
+  ], { allowFailure: true });
+  const score = Number(comparison.stderr.match(/All:([0-9.]+)/)?.[1]);
+  if (!Number.isFinite(score) || score < 0.94) {
+    throw new Error(`Desktop preflight ${label} did not match the ChangeGuard page (SSIM ${score || "unavailable"}).`);
+  }
+}
+
 async function addCaptionOverlay() {
   await page.evaluate(() => {
     document.querySelector("#changeguard-video-caption")?.remove();
@@ -169,9 +234,13 @@ const segments = [];
 try {
   await page.goto(appUrl, { waitUntil: "networkidle" });
   await page.locator(".proposal-panel").waitFor();
+  await page.getByText("Live DataHub / AI active", { exact: true }).waitFor({ timeout: 60_000 });
+  await page.locator(".asset-nav button").nth(4).waitFor({ timeout: 60_000 });
   await fullscreen();
   await addCaptionOverlay();
   await caption("PROPOSE", "Rename country_code to market_code against synthetic local metadata.");
+  await activateCaptureWindow();
+  await assertDesktopMatchesPage("proposal");
 
   const proposalCapture = await startCapture("01-proposal");
   segments.push(proposalCapture.destination);
@@ -183,6 +252,8 @@ try {
 
   await page.locator(".passport").waitFor({ state: "visible", timeout: 360_000 });
   await page.locator(".passport-header").scrollIntoViewIfNeeded();
+  await activateCaptureWindow();
+  await assertDesktopMatchesPage("analysis");
 
   const analysisCapture = await startCapture("02-analysis");
   segments.push(analysisCapture.destination);
@@ -213,6 +284,8 @@ try {
   await page.waitForTimeout(1200);
   await addCaptionOverlay();
   await caption("DURABLE MEMORY", "The final change passport is stored as a Decision inside DataHub.");
+  await activateCaptureWindow();
+  await assertDesktopMatchesPage("datahub-document");
 
   const documentCapture = await startCapture("03-datahub-document");
   segments.push(documentCapture.destination);

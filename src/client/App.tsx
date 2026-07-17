@@ -90,6 +90,7 @@ function SourceRail({ catalog, selected, onSelect }: {
             key={asset.urn}
             className={selected === asset.urn ? "active" : ""}
             onClick={() => onSelect(asset.urn)}
+            title={`${asset.name}\n${asset.domain} / ${asset.owner}`}
           >
             <span className="asset-platform">{asset.platform.slice(0, 2).toUpperCase()}</span>
             <span><strong>{asset.name}</strong><small>{asset.domain} / {asset.owner}</small></span>
