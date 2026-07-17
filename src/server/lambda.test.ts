@@ -25,6 +25,7 @@ describe("AWS Lambda public demo handler", () => {
       mode: "demo",
       deployment: "public",
       integration: "Simulated DataHub fixture",
+      agentMode: "deterministic-preview",
       mutationEnabled: true,
     });
   });

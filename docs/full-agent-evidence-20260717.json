@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-07-17T13:46:08.382Z",
+  "mode": "live",
+  "deployment": "private",
+  "agentMode": "model-backed",
+  "model": "qwen2.5:7b-instruct-q4_K_M",
+  "proposal": {
+    "assetUrn": "urn:li:dataset:(urn:li:dataPlatform:postgres,commerce.public.customers,PROD)",
+    "field": "country_code",
+    "changeType": "rename",
+    "targetValue": "market_code"
+  },
+  "passport": {
+    "id": "CG-20260717-F3EF43",
+    "riskScore": 38,
+    "policyVerdict": "safe-with-plan",
+    "modelRecommendation": "proceed",
+    "finalVerdict": "safe-with-plan",
+    "groundedOwnerBrief": "Unassigned",
+    "trace": [
+      "get_entities",
+      "list_schema_fields",
+      "get_lineage",
+      "model_synthesis",
+      "policy_guard"
+    ]
+  },
+  "writeBack": {
+    "tool": "save_document",
+    "documentUrn": "urn:li:document:shared-704e8eed-9ea0-4fd9-adc4-e6b0611a3b08",
+    "message": "Successfully created document: Rename country_code to market_code in commerce.public.customers"
+  },
+  "independentVerification": {
+    "tool": "search_documents",
+    "matchedDocumentUrn": "urn:li:document:shared-704e8eed-9ea0-4fd9-adc4-e6b0611a3b08",
+    "subType": "Decision",
+    "tags": ["changeguard", "schema-change", "moderate"],
+    "verified": true
+  }
+}

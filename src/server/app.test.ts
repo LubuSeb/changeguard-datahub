@@ -2,10 +2,12 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
 import { DemoDataHubGateway, type DataHubGateway } from "./datahub/gateway.js";
+import { ModelAdviceError, type ModelAdvisor } from "./model/advisor.js";
 
-function testApp(gateway: DataHubGateway = new DemoDataHubGateway()) {
+function testApp(gateway: DataHubGateway = new DemoDataHubGateway(), advisor: ModelAdvisor | null = null) {
   return createApp({
     gateway,
+    advisor,
     allowedOrigins: ["http://localhost:5173"],
     serveClient: false,
   }).app;
@@ -20,8 +22,42 @@ describe("ChangeGuard API boundary", () => {
       deployment: "public",
       mutationEnabled: true,
       integration: "Simulated DataHub fixture",
+      agentMode: "deterministic-preview",
     });
     expect(response.body.tools).toContain("list_schema_fields");
+  });
+
+  it("fails closed when a configured model advisor fails", async () => {
+    const failed: ModelAdvisor = {
+      provider: "test-provider",
+      model: "test-model",
+      advise: async () => { throw new ModelAdviceError("Model reasoning failed closed."); },
+    };
+    const response = await request(testApp(new DemoDataHubGateway(), failed))
+      .post("/api/analyze")
+      .send({
+        assetUrn: "urn:li:dataset:(urn:li:dataPlatform:postgres,commerce.public.customers,PROD)",
+        field: "country_code",
+        changeType: "rename",
+        targetValue: "market_code",
+        rationale: "Validate that model failures never create a fallback passport.",
+      })
+      .expect(503);
+    expect(response.body.error).toMatch(/failed closed/i);
+  });
+
+  it("validates the proposal before invoking the model", async () => {
+    let calls = 0;
+    const counted: ModelAdvisor = {
+      provider: "test-provider",
+      model: "test-model",
+      advise: async () => { calls += 1; throw new Error("should not run"); },
+    };
+    await request(testApp(new DemoDataHubGateway(), counted))
+      .post("/api/analyze")
+      .send({ assetUrn: "x", field: "not valid", changeType: "drop", rationale: "too short" })
+      .expect(400);
+    expect(calls).toBe(0);
   });
 
   it("rejects unapproved browser origins and never emits a wildcard CORS header", async () => {

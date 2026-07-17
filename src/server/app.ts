@@ -3,8 +3,10 @@ import express from "express";
 import path from "node:path";
 import { z } from "zod";
 import type { ChangeProposal } from "../shared/types.js";
+import { addModelSynthesis } from "./agent/orchestrator.js";
 import { createPassport, InvalidChangeProposalError } from "./agent/planner.js";
 import { createGateway, type DataHubGateway } from "./datahub/gateway.js";
+import { createModelAdvisor, ModelAdviceError, type ModelAdvisor } from "./model/advisor.js";
 
 const baseProposal = {
   assetUrn: z.string().min(1).max(500),
@@ -21,6 +23,7 @@ export const changeProposalSchema = z.discriminatedUnion("changeType", [
 
 export interface AppOptions {
   gateway?: DataHubGateway;
+  advisor?: ModelAdvisor | null;
   allowedOrigins?: string[];
   allowSameOrigin?: boolean;
   clientPath?: string;
@@ -38,6 +41,7 @@ function configuredOrigins(environment: NodeJS.ProcessEnv): string[] {
 export function createApp(options: AppOptions = {}) {
   const app = express();
   const gateway = options.gateway ?? createGateway();
+  const advisor = options.advisor === undefined ? createModelAdvisor() : options.advisor ?? undefined;
   const allowedOrigins = new Set(options.allowedOrigins ?? configuredOrigins(process.env));
   const allowSameOrigin = options.allowSameOrigin ?? true;
   const passports = new Map<string, ReturnType<typeof createPassport>>();
@@ -75,6 +79,8 @@ export function createApp(options: AppOptions = {}) {
         mode: gateway.mode,
         deployment: gateway.deployment,
         integration: gateway.mode === "live" ? "DataHub MCP Server" : "Simulated DataHub fixture",
+        agentMode: advisor ? "model-backed" : "deterministic-preview",
+        agentModel: advisor?.model,
         mutationEnabled: capabilities.mutationEnabled,
         tools: capabilities.tools,
       });
@@ -95,7 +101,8 @@ export function createApp(options: AppOptions = {}) {
     try {
       const proposal = changeProposalSchema.parse(request.body) as ChangeProposal;
       const context = await gateway.context(proposal.assetUrn, proposal.field);
-      const passport = createPassport(proposal, context);
+      const policyPassport = createPassport(proposal, context);
+      const passport = advisor ? await addModelSynthesis(policyPassport, advisor) : policyPassport;
       passports.set(passport.id, passport);
       response.json(passport);
     } catch (error) {
@@ -126,7 +133,10 @@ export function createApp(options: AppOptions = {}) {
     const message = error instanceof z.ZodError
       ? error.issues.map((issue) => issue.message).join(" ")
       : error instanceof Error ? error.message : "Unexpected server error.";
-    response.status(error instanceof z.ZodError || error instanceof InvalidChangeProposalError ? 400 : 500).json({ error: message });
+    const status = error instanceof z.ZodError || error instanceof InvalidChangeProposalError
+      ? 400
+      : error instanceof ModelAdviceError ? 503 : 500;
+    response.status(status).json({ error: message });
   });
 
   return { app, gateway };

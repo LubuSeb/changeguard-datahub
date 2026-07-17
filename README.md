@@ -27,9 +27,10 @@ ChangeGuard was created from scratch during the July 6-August 10, 2026 submissio
 3. Ask DataHub for authoritative schema and downstream context.
 4. Propagate field impact where column mappings exist and retain unknown mappings as asset-level impact.
 5. Score risk from change semantics, configured certification-tag signals, governance tags, owner count, and asset type.
-6. Produce a reversible five-phase rollout and concrete validation SQL.
-7. Route notices to every affected owner.
-8. Save the approved passport into DataHub's document graph.
+6. Ask a bounded local model for a structured recommendation, cited risk factors, and owner actions grounded only in those retrieved assets.
+7. Reject invented assets, wrong-owner assignments, malformed output, and model failures; the model may tighten the deterministic verdict but never loosen it.
+8. Produce a reversible five-phase rollout, concrete validation SQL, and owner routing.
+9. Save the approved passport into DataHub's document graph.
 
 ## Run locally
 
@@ -40,7 +41,18 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. Demo mode is the default and requires no account, token, model key, or external service. It uses a rich synthetic commerce catalog. The UI labels every demo tool trace as a simulated fixture operation.
+Open `http://localhost:5173`. Demo mode is the default and requires no account, token, model key, or external service. It uses a rich synthetic commerce catalog. Without a configured reasoner it is explicitly labeled **deterministic preview**; the UI never presents that path as model-backed.
+
+To run the complete agent locally without a paid API, install [Ollama](https://ollama.com/), pull an instruction model, and set:
+
+```bash
+CHANGEGUARD_REASONER=ollama
+CHANGEGUARD_MODEL=qwen2.5:7b-instruct-q4_K_M
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+npm run dev
+```
+
+When configured, the model stage is mandatory for each analysis. Timeout, malformed JSON, unknown URNs, invalid owners, duplicated phases, or other grounding failures return an error and no passport is stored. The evidence packet is hashed for provenance; prompts and model responses are not logged.
 
 ## Production build
 
@@ -60,6 +72,8 @@ DATAHUB_MODE=live
 CHANGEGUARD_DEPLOYMENT=private
 DATAHUB_MCP_URL=http://localhost:8080/mcp
 DATAHUB_TOKEN=<personal-access-token>
+CHANGEGUARD_REASONER=ollama
+CHANGEGUARD_MODEL=qwen2.5:7b-instruct-q4_K_M
 npm run dev
 ```
 
@@ -99,7 +113,7 @@ docker run --rm -p 8787:8787 \
 
 ## AWS Lambda public demo
 
-The Lambda entry point is intentionally demo-only. It constructs `DemoDataHubGateway` directly and ignores live DataHub mode and endpoint variables. Demo write-back is process-local, non-privileged, and may reset between Lambda invocations.
+The Lambda entry point is intentionally demo-only. It constructs `DemoDataHubGateway` directly, disables the model adapter, and ignores live DataHub mode and endpoint variables. The UI labels it deterministic preview. This avoids turning an unauthenticated public URL into a billable or compute-abuse surface. Demo write-back is process-local, non-privileged, and may reset between Lambda invocations.
 
 The reviewed public deployment is available at [ChangeGuard on AWS Lambda](https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/).
 
@@ -120,7 +134,7 @@ npm run build
 npm run check
 ```
 
-Tests cover lineage propagation, mapped and unknown downstream fields, change-specific SQL dialects and physical names, semantic no-op rejection, official MCP response contracts, catalog field hydration, capability discovery, failed write-back, deployment profiles, CORS, API validation, Lambda demo enforcement, and idempotent demo receipts.
+Tests cover lineage propagation, mapped and unknown downstream fields, change-specific SQL dialects and physical names, semantic no-op rejection, official MCP response contracts, catalog field hydration, capability discovery, failed write-back, deployment profiles, CORS, API validation, Lambda demo enforcement, idempotent demo receipts, model grounding, wrong-owner rejection, stricter-only verdict merging, and fail-closed model behavior.
 
 For an authorized local DataHub instance:
 
@@ -133,7 +147,8 @@ DATAHUB_MCP_URL=http://127.0.0.1:8005/mcp DATAHUB_ALLOW_MUTATION=true npm run te
 
 ```text
 src/client/              React operator console
-src/server/agent/        Deterministic planning and risk engine
+src/server/agent/        Policy engine and bounded model orchestration
+src/server/model/        Local model adapter and strict output schema
 src/server/datahub/      Demo and official MCP gateways
 src/server/data/         Licensed synthetic catalog fixture
 src/shared/              API contracts
@@ -152,6 +167,8 @@ The seeded commerce catalog is original synthetic data created for this project.
 
 - DataHub tokens remain server-side and are never persisted by the app.
 - Live MCP failures are explicit; the app does not disguise stale fixture data as live output.
+- Configured model failures and ungrounded output are explicit; there is no silent deterministic fallback.
+- Model output cannot alter retrieved evidence, risk score, validation SQL, rollout gates, or write authorization.
 - Public deployments are demo-only by default; live mode requires an explicit private profile.
 - Publishing is a separate user action, idempotent and process-local in demo mode, and separately gated in live mode.
 - CORS accepts exact configured origins and same-origin requests; unapproved browser origins receive `403`.

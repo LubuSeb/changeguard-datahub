@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-07-17T13:42:00Z",
+  "environment": {
+    "datahub": "DataHub Core v1.5.0.6 local Docker quickstart",
+    "mcpServer": "mcp-server-datahub v0.6.0",
+    "mcpEndpoint": "http://127.0.0.1:8005/mcp",
+    "catalog": "synthetic local ChangeGuard datasets"
+  },
+  "readOnlyRun": {
+    "mutationEnabled": false,
+    "catalogAssets": 5,
+    "sourceFields": 4,
+    "downstreamAssets": 4,
+    "mappedHops": [1, 2, 3, 4],
+    "receipt": null
+  },
+  "authorizedWriteRun": {
+    "mutationEnabled": true,
+    "catalogAssets": 5,
+    "sourceFields": 4,
+    "downstreamAssets": 4,
+    "documentUrn": "urn:li:document:shared-53287668-93cf-48c8-b36c-f714186c20dd",
+    "message": "Successfully created document: Rename country_code to market_code in commerce.public.customers"
+  },
+  "discoveredRequiredTools": [
+    "search",
+    "get_entities",
+    "list_schema_fields",
+    "get_lineage",
+    "save_document"
+  ],
+  "commands": [
+    "DATAHUB_MCP_URL=http://127.0.0.1:8005/mcp DATAHUB_ALLOW_MUTATION=false npm run test:live",
+    "DATAHUB_MCP_URL=http://127.0.0.1:8005/mcp DATAHUB_ALLOW_MUTATION=true npm run test:live"
+  ]
+}

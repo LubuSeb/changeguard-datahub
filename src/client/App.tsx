@@ -5,6 +5,7 @@ import {
   ArrowRight,
   BadgeCheck,
   BookOpenCheck,
+  BrainCircuit,
   Braces,
   Check,
   ChevronDown,
@@ -28,7 +29,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { api } from "./api";
+import { api } from "./client-api";
 import { LineageGraph } from "./components/LineageGraph";
 import { RiskDial } from "./components/RiskDial";
 import type {
@@ -66,7 +67,7 @@ function StatusPill({ health }: { health: HealthResponse | null }) {
   return (
     <div className={`status-pill ${health?.ok ? "status-pill--online" : ""}`}>
       <span />
-      {health ? `${health.mode === "demo" ? "Demo graph" : "Live DataHub"} connected` : "Connecting"}
+      {health ? `${health.mode === "demo" ? "Demo graph" : "Live DataHub"} / ${health.agentMode === "model-backed" ? "AI active" : "preview"}` : "Connecting"}
     </div>
   );
 }
@@ -247,11 +248,48 @@ function ImpactTable({ passport }: { passport: ChangePassport }) {
   );
 }
 
+function AgentSynthesisPanel({ passport }: { passport: ChangePassport }) {
+  const synthesis = passport.agentSynthesis;
+  if (!synthesis) {
+    return (
+      <section className="content-section synthesis-section synthesis-section--preview">
+        <div className="section-heading">
+          <div><span>02</span><div><h3>Agent synthesis</h3><p>Disabled in the cost-safe public preview</p></div></div>
+          <BrainCircuit size={19} />
+        </div>
+        <div className="preview-notice">
+          <ShieldCheck size={19} />
+          <div><strong>Deterministic preview only</strong><p>The public fixture demonstrates the policy engine without exposing a billable model endpoint. Local and private deployments run bounded model reasoning and fail closed when its output cannot be grounded.</p></div>
+        </div>
+      </section>
+    );
+  }
+  const names = new Map([passport.source, ...passport.impacted].map((asset) => [asset.urn, asset.name]));
+  return (
+    <section className="content-section synthesis-section">
+      <div className="section-heading">
+        <div><span>02</span><div><h3>Agent synthesis</h3><p>Model judgment bounded by catalog evidence and deterministic gates</p></div></div>
+        <BrainCircuit size={19} />
+      </div>
+      <div className="synthesis-lead">
+        <div><small>Grounded recommendation</small><strong>{titleCase(synthesis.recommendation)}</strong></div>
+        <p>{synthesis.rationale}</p>
+        <span>{synthesis.provenance.provider} / {synthesis.provenance.model}</span>
+      </div>
+      <div className="synthesis-grid">
+        <div><h4>Evidence-backed risks</h4>{synthesis.riskFactors.map((factor, index) => <article key={index}><p>{factor.explanation}</p><small>{factor.assetUrns.map((urn) => names.get(urn) ?? urn).join(" / ")}</small></article>)}</div>
+        <div><h4>Owner actions</h4>{synthesis.ownerBriefs.map((brief) => <article key={brief.owner}><strong>{brief.owner}</strong><p>{brief.message}</p><small>{brief.assetUrns.map((urn) => names.get(urn) ?? urn).join(" / ")}</small></article>)}</div>
+      </div>
+      <footer className="synthesis-guard"><LockKeyhole size={14} /> Policy verdict: {titleCase(synthesis.policyVerdict)}. Model output may tighten this verdict, never loosen it.</footer>
+    </section>
+  );
+}
+
 function RolloutPlan({ passport }: { passport: ChangePassport }) {
   return (
     <section className="content-section plan-section">
       <div className="section-heading">
-        <div><span>02</span><div><h3>Safe rollout</h3><p>Ordered by dependency and reversibility</p></div></div>
+        <div><span>03</span><div><h3>Safe rollout</h3><p>Ordered by dependency and reversibility</p></div></div>
         <GitBranch size={19} />
       </div>
       <div className="plan-grid">
@@ -276,7 +314,7 @@ function ValidationPanel({ passport }: { passport: ChangePassport }) {
   return (
     <section className="content-section validation-section">
       <div className="section-heading">
-        <div><span>03</span><div><h3>Validation pack</h3><p>Merge-ready checks, grounded in the selected schema</p></div></div>
+        <div><span>04</span><div><h3>Validation pack</h3><p>Review-ready checks, grounded in the selected schema</p></div></div>
         <Code2 size={19} />
       </div>
       <div className="validation-layout">
@@ -303,7 +341,7 @@ function EvidencePanel({ passport }: { passport: ChangePassport }) {
   return (
     <section className="content-section evidence-section">
       <div className="section-heading">
-        <div><span>04</span><div><h3>Context evidence</h3><p>Live MCP calls or clearly labeled simulated fixture operations</p></div></div>
+        <div><span>05</span><div><h3>Context evidence</h3><p>Live MCP calls or clearly labeled simulated fixture operations</p></div></div>
         <TerminalSquare size={19} />
       </div>
       <div className="trace-grid">
@@ -314,11 +352,11 @@ function EvidencePanel({ passport }: { passport: ChangePassport }) {
             <Check size={16} />
           </div>
         ))}
-        <div>
+        {!passport.agentSynthesis && <div>
           <span>{String(passport.trace.length + 1).padStart(2, "0")}</span>
-          <div><strong>policy_synthesis</strong><small>ChangeGuard engine</small><p>Combined catalog evidence into a deterministic, inspectable rollout decision.</p></div>
+          <div><strong>policy_synthesis</strong><small>ChangeGuard policy engine</small><p>Combined catalog evidence into a deterministic, inspectable preview decision.</p></div>
           <Check size={16} />
-        </div>
+        </div>}
       </div>
     </section>
   );
@@ -422,13 +460,14 @@ export default function App() {
         {loading && (
           <section className="analysis-loading">
             <RefreshCw className="spin" size={28} />
-            <div><strong>Walking the context graph</strong><span>Schema -&gt; lineage -&gt; owners -&gt; governance -&gt; rollout</span></div>
+            <div><strong>Walking the context graph</strong><span>Schema -&gt; lineage -&gt; owners -&gt; bounded reasoning -&gt; policy guard</span></div>
           </section>
         )}
         {passport && (
           <div className="passport">
             <PassportHeader passport={passport} />
             <ImpactTable passport={passport} />
+            <AgentSynthesisPanel passport={passport} />
             <RolloutPlan passport={passport} />
             <ValidationPanel passport={passport} />
             <EvidencePanel passport={passport} />

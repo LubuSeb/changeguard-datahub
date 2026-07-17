@@ -27,10 +27,12 @@ ChangeGuard accepts a concrete schema proposal, such as renaming `country_code` 
 3. identify configured certification-tag signals, governance tags, dashboard consumers, and ML consumers;
 4. group migration work by DataHub owner;
 5. score risk with an inspectable policy engine;
-6. generate a reversible compatibility rollout and validation SQL; and
-7. in authorized private live mode, write the final passport back through `save_document`; the public demo simulates this operation without changing DataHub.
+6. run bounded local-model synthesis for a grounded recommendation, cited risks, and owner actions;
+7. reject invented assets, wrong-owner assignments, malformed output, and any attempt to weaken the policy verdict;
+8. generate a reversible compatibility rollout and validation SQL; and
+9. in authorized private live mode, write the final passport back through `save_document`; the public preview simulates this operation without changing DataHub.
 
-The output is not another lineage visualization. It is a merge-ready operating plan with gates, owners, checks, rollback, and an evidence trail showing exactly which DataHub tools grounded the decision.
+The output is not another lineage visualization. It is a review-ready operating plan with gates, owners, checks, rollback, and an evidence trail showing exactly which DataHub tools and model synthesis grounded the decision.
 
 ## How we built it
 
@@ -39,6 +41,7 @@ The output is not another lineage visualization. It is a merge-ready operating p
 - The official `@modelcontextprotocol/sdk` streamable HTTP client.
 - DataHub MCP tools: `get_entities`, `list_schema_fields`, `get_lineage`, and `save_document`.
 - A deterministic policy and planning engine so every decision is inspectable and testable.
+- A local Ollama model for structured synthesis, with strict Zod output, asset/owner grounding, input hashing, and a monotonic policy guard.
 - An original synthetic cross-platform catalog covering PostgreSQL, Snowflake/dbt, Looker, Power BI, Feast, and MLflow.
 - A private live MCP mode for DataHub OSS or Cloud, plus an honestly labeled no-credential simulated demo mode.
 
@@ -48,13 +51,14 @@ The plan changes with the catalog graph. A different field follows available col
 
 ## Challenges
 
-The hard part was keeping the agent useful without letting it invent context. ChangeGuard fails closed when a field is absent from DataHub, separates live and demo modes, keeps credentials server-side, and surfaces MCP failures instead of disguising fixture data as live output. Field-level propagation also had to preserve renames across transformations so `country_code` could correctly affect a downstream `market` feature.
+The hard part was making model reasoning material without letting it invent context. ChangeGuard projects a bounded DataHub evidence packet, treats metadata as untrusted data, validates strict structured output, resolves every cited URN and owner, and allows the model only to maintain or tighten the deterministic verdict. It fails closed when either DataHub or the configured model is unavailable. Field-level propagation also preserves renames across transformations so `country_code` can correctly affect a downstream `market` feature.
 
 ## Accomplishments
 
 - End-to-end, no-credential demo with meaningful cross-platform lineage.
 - Implements and separately validates an official DataHub MCP integration and gated private `save_document` write-back. The public demo uses synthetic fixtures and saves only a process-local simulated receipt.
 - Deterministic risk logic with asset-level severity and owner routing.
+- Grounded local-model recommendations with visible provenance and deterministic policy authority.
 - Generated validation SQL and a reversible five-phase rollout.
 - Tests for official MCP contracts, lineage mapping, SQL dialects, deployment boundaries, anti-hallucination gates, failed writes, and idempotent demo write-back.
 - Apache-2.0 source, Docker packaging, architecture notes, and sample output.
@@ -72,7 +76,7 @@ Metadata becomes more valuable when agents do not just retrieve it. DataHub's co
 
 ## Built with
 
-DataHub, DataHub MCP Server, Model Context Protocol, TypeScript, React, Vite, Express, Zod, React Flow, Vitest, Docker, AWS Lambda
+DataHub, DataHub MCP Server, Model Context Protocol, Ollama, Qwen 2.5, TypeScript, React, Vite, Express, Zod, React Flow, Vitest, Docker, AWS Lambda
 
 ## Project provenance
 
@@ -83,6 +87,7 @@ ChangeGuard was created from scratch during the July 6-August 10, 2026 submissio
 - Project demo: https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/
 - Public Apache-2.0 repository: https://github.com/LubuSeb/changeguard-datahub
 - Public video under three minutes: `TBD_PUBLIC_VIDEO_URL`
+- Local final video awaiting public upload: `output/changeguard-live-agent-footage-1440p60.mp4` (74 seconds, silent, captioned, 2560x1440 at 60 FPS)
 - Primary image: `submission-media/02-risk-passport.png`
 - Secondary image: `submission-media/03-rollout.png`
 - Secondary image: `submission-media/04-simulated-receipt.png`

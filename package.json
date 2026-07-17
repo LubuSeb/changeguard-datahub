@@ -13,6 +13,7 @@
     "test": "vitest run --config vitest.config.ts",
     "test:live": "tsx src/server/integration/live-smoke.ts",
     "test:watch": "vitest --config vitest.config.ts",
+    "video:capture": "node scripts/capture-live-demo.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
     "check": "npm run typecheck && npm run test && npm run build"
   },
@@ -37,6 +38,7 @@
     "@vitejs/plugin-react": "^5.1.4",
     "concurrently": "^9.2.1",
     "esbuild": "^0.28.1",
+    "playwright-core": "^1.55.0",
     "supertest": "^7.2.2",
     "tsx": "^4.21.0",
     "typescript": "^7.0.2",

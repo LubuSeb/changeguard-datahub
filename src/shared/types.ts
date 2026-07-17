@@ -108,7 +108,30 @@ export interface ToolTrace {
   tool: string;
   status: "success" | "skipped";
   summary: string;
-  source: "DataHub MCP" | "Simulated fixture operation";
+  source: "DataHub MCP" | "Simulated fixture operation" | "Local model" | "ChangeGuard policy engine";
+}
+
+export type AgentRecommendation = "proceed" | "escalate" | "block";
+
+export interface AgentSynthesis {
+  recommendation: AgentRecommendation;
+  policyVerdict: ChangePassport["verdict"];
+  rationale: string;
+  riskFactors: Array<{ assetUrns: string[]; explanation: string }>;
+  phaseGuidance: Array<{
+    phase: PlanStep["phase"];
+    guidance: string;
+    evidenceAssetUrns: string[];
+  }>;
+  ownerBriefs: Array<{ owner: string; assetUrns: string[]; message: string }>;
+  openQuestions: string[];
+  provenance: {
+    provider: string;
+    model: string;
+    generatedAt: string;
+    inputSha256: string;
+    promptVersion: string;
+  };
 }
 
 export interface ChangePassport {
@@ -127,6 +150,7 @@ export interface ChangePassport {
   validations: ValidationCheck[];
   notifications: Array<{ owner: string; assets: string[]; message: string }>;
   trace: ToolTrace[];
+  agentSynthesis?: AgentSynthesis;
   assumptions: string[];
   rollback: string;
 }
@@ -146,6 +170,8 @@ export interface HealthResponse {
   mode: "demo" | "live";
   deployment: DeploymentProfile;
   integration: string;
+  agentMode: "model-backed" | "deterministic-preview";
+  agentModel?: string;
   mutationEnabled: boolean;
   tools: string[];
 }

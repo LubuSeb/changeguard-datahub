@@ -19,6 +19,7 @@ function lambdaClientPath(): string {
 export function createLambdaApp() {
   return createApp({
     gateway: new DemoDataHubGateway(),
+    advisor: null,
     allowedOrigins: lambdaOrigins(),
     allowSameOrigin: true,
     clientPath: lambdaClientPath(),

@@ -2,11 +2,13 @@
 
 Target video length: under the competition's three-minute limit.
 
+Final reviewed recording: `output/changeguard-live-agent-footage-1440p60.mp4` (74 seconds, silent, captioned, 2560x1440 at 60 FPS). The remaining publication step is public YouTube hosting.
+
 ## Opening
 
 "A schema change is rarely local. ChangeGuard turns a proposed edit into a DataHub-grounded, reversible change passport."
 
-Show the control room and connected demo graph. State clearly that the bundled data is synthetic and that the same workflow can connect to a live DataHub MCP endpoint.
+Show the control room in **Live DataHub / AI active** mode. State clearly that the catalog is synthetic local data and no production system is modified.
 
 ## Proposal
 
@@ -20,6 +22,8 @@ Show the lineage graph. Point out that the seeded column-mapping evidence maps `
 
 Show the risk score and impacted owner groups. Explain that change semantics, configured certification-tag signals, governance tags, owner count, and consumer class affect the transparent policy.
 
+Show **Agent synthesis**. Name the local model, point to its cited assets and owner actions, and show the guard statement. Explain that every reference was validated against the retrieved DataHub graph and the model can tighten the policy verdict but never loosen it.
+
 ## Actionable output
 
 Scroll through the five-phase rollout. Emphasize the additive compatibility phase, lineage-ordered migration, verification gate, and rollback.
@@ -28,7 +32,7 @@ Open one generated SQL validation check. State that ChangeGuard generates review
 
 ## Evidence and memory
 
-Show the operation trail: `get_entities`, `list_schema_fields`, and `get_lineage`. In the public demo, state that these are simulated fixture operations and click **Save demo record** to show the in-memory receipt. If recording the authorized local live mode, show the real `save_document` document URN and make the mode switch visible.
+Show the operation trail: `get_entities`, `list_schema_fields`, `get_lineage`, `model_synthesis`, and `policy_guard`. Click **Save to DataHub**, show the real `save_document` document URN, then independently open that document in the local DataHub UI.
 
 Close with: "DataHub is not decorative here. It is the source of truth, the coordination graph, and the durable memory behind every decision."
 
@@ -39,3 +43,4 @@ Close with: "DataHub is not decorative here. It is the source of truth, the coor
 - Show the running application, not only slides.
 - Keep the final cut below three minutes.
 - Mention that demo data is synthetic and no production system is modified.
+- Do not present the public deterministic preview as the model-backed demonstration.
