@@ -83,3 +83,6 @@ ChangeGuard was created from scratch during the July 6-August 10, 2026 submissio
 - Project demo: https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/
 - Public Apache-2.0 repository: https://github.com/LubuSeb/changeguard-datahub
 - Public video under three minutes: `TBD_PUBLIC_VIDEO_URL`
+- Primary image: `submission-media/02-risk-passport.png`
+- Secondary image: `submission-media/03-rollout.png`
+- Secondary image: `submission-media/04-simulated-receipt.png`

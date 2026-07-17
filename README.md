@@ -1,5 +1,7 @@
 # ChangeGuard
 
+![ChangeGuard risk passport generated from DataHub context](submission-media/02-risk-passport.png)
+
 ChangeGuard is a DataHub-grounded schema change passport agent. It turns a proposed column change into an evidence-backed blast radius, risk decision, owner routing plan, compatibility rollout, validation SQL, and durable decision record.
 
 - [Public demo](https://iwus2xg2ulcnaeyav33ktu7pii0mcskw.lambda-url.eu-north-1.on.aws/)
