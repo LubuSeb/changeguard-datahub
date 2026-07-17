@@ -163,6 +163,82 @@ async function addCaptionOverlay() {
   });
 }
 
+async function showTitleSlate() {
+  await page.evaluate(() => {
+    document.querySelector("#changeguard-video-title")?.remove();
+    const overlay = document.createElement("div");
+    overlay.id = "changeguard-video-title";
+    overlay.innerHTML = `
+      <div class="changeguard-video-title__mark">CG</div>
+      <h1>ChangeGuard</h1>
+      <p>AI-assisted schema change governance for DataHub</p>
+      <small>From proposed rename to durable decision record</small>
+    `;
+    document.body.appendChild(overlay);
+    const style = document.createElement("style");
+    style.id = "changeguard-video-title-style";
+    style.textContent = `
+      #changeguard-video-title {
+        align-items: center;
+        background: #17352c;
+        color: #f7faf8;
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, sans-serif;
+        inset: 0;
+        justify-content: center;
+        opacity: 1;
+        position: fixed;
+        transition: opacity 500ms ease;
+        z-index: 2147483647;
+      }
+      .changeguard-video-title__mark {
+        align-items: center;
+        background: #b9efcc;
+        color: #17352c;
+        display: flex;
+        font-size: 24px;
+        font-weight: 700;
+        height: 64px;
+        justify-content: center;
+        margin-bottom: 26px;
+        width: 64px;
+      }
+      #changeguard-video-title h1 {
+        font-size: 58px;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1;
+        margin: 0;
+      }
+      #changeguard-video-title p {
+        color: #d9e8e0;
+        font-size: 26px;
+        letter-spacing: 0;
+        margin: 22px 0 0;
+      }
+      #changeguard-video-title small {
+        color: #9fb9ad;
+        font-size: 17px;
+        letter-spacing: 0;
+        margin-top: 18px;
+      }
+    `;
+    document.head.appendChild(style);
+  });
+}
+
+async function dismissTitleSlate() {
+  await page.locator("#changeguard-video-title").evaluate((element) => {
+    element.style.opacity = "0";
+  });
+  await hold(0.6);
+  await page.evaluate(() => {
+    document.querySelector("#changeguard-video-title")?.remove();
+    document.querySelector("#changeguard-video-title-style")?.remove();
+  });
+}
+
 async function caption(label, text) {
   await page.locator("#changeguard-video-caption strong").evaluate((element, value) => { element.textContent = value; }, label);
   await page.locator("#changeguard-video-caption span").evaluate((element, value) => { element.textContent = value; }, text);
@@ -238,12 +314,15 @@ try {
   await page.locator(".asset-nav button").nth(4).waitFor({ timeout: 60_000 });
   await fullscreen();
   await addCaptionOverlay();
+  await showTitleSlate();
   await caption("PROPOSE", "Rename country_code to market_code against synthetic local metadata.");
   await activateCaptureWindow();
   await assertDesktopMatchesPage("proposal");
 
   const proposalCapture = await startCapture("01-proposal");
   segments.push(proposalCapture.destination);
+  await hold(3);
+  await dismissTitleSlate();
   await hold(3);
   await page.locator(".run-button").click();
   await caption("VERIFY", "Read schema and lineage through the official DataHub MCP server.");
